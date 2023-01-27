@@ -21,7 +21,7 @@ export const NavBar = () => {
                                 <li><NavLink to="/">Inicio</NavLink></li>
                                 <li><NavLink to="/constructoras-de-casas-en-queretaro">Quienes somos</NavLink></li>
                                 <li><NavLink to="/arquitectos-en-queretaro">ING CIVILES Y ARQ</NavLink></li>
-                                <li><NavLink to="/albañiles-en-queretaro">Cotizador</NavLink></li>
+                                <li><NavLink to="/albaniles-en-queretaro">Cotizador</NavLink></li>
                                 <li><NavLink to="/presupuesto-construccion-casa-qro">Contacto</NavLink></li>
                                 <li></li>
                             </ul>

@@ -24,10 +24,30 @@ function Cotizador() {
   
   const [metros, setMetros] = useState('');
   const [condicion, setCondicion] = useState('');
+  const [checked, setChecked] = useState(false);
 
   const metrosChange = event => {
     const value = event.target.value;
     setMetros(value);
+    catCondicion(value);
+  };
+
+  const handleCheckboxValue = (value) => {
+    console.log(value);
+    if(value) {
+      setChecked('checked');
+    } else {     
+      setChecked('');
+    }
+  };
+
+  const handleArea = (value) => {
+    console.log('Area:', value);
+    setMetros(value);
+    catCondicion(value);
+  };
+
+  const catCondicion = (value) => {
     if (value > 60 && value <= 100 ) {
       setCondicion('De linea');
     } else if (value > 100 && value <= 250) {
@@ -37,12 +57,7 @@ function Cotizador() {
     } else {
       setCondicion('');
     }
-  };
-
-  const handleCheckboxValue = (value) => {
-    console.log('check:', value);
-  };
-
+  }
 
   const contenido = 
     <>
@@ -67,42 +82,127 @@ function Cotizador() {
             <br />
             <Row>
               <Col lg="12">
-                <div className="inner-content">                                            
+                <div className="inner-content">               
                   <Form style={{padding: "2rem"}}>
                     {/* m2 */}
                     <Row style={{justifyContent: "center"}}>
-                      <Col md={4}>
+                      <Col md={9}>
                         <Form.Group controlId="forM2">
                           <Form.Label>¿Cúal es el área de tu terreno?</Form.Label>
-                          <Form.Control type="number" placeholder="Ingresa los m2" value={metros} onChange={metrosChange} min={60}/>
-                          <Form.Text className="text-muted mb-2">
-                            text avisos
-                          </Form.Text>
-                          <CheckboxComp col="12" text="No se el área de mi terreno" onCheckboxChange={handleCheckboxValue}/>
+                          {checked === 'checked' ? <Form.Control disabled type="number" placeholder="Calculando..." value={metros} onChange={metrosChange} min={60}/> :
+                          <Form.Control type="number" placeholder="Ingresa los m2" value={metros} onChange={metrosChange} min={60}/>}
+                          <CheckboxComp col="12" text="No se el área de mi terreno" onCheckboxChange={handleCheckboxValue} onAreaChange={handleArea}/>
                         </Form.Group>
                       </Col>
                     </Row>
                     {/* check m2 */}
                     <h6 className="mt-4 text-center"><strong>Condición: {condicion}</strong></h6>
-                    {metros > 60 }
-                    {/* check */}
-                    {metros > 100 &&
+                    {metros > 60 &&
                     <>
-                      <Row>
-                        <CheckboxComp col="4" text="Estudio"/>
-                        <CheckboxComp col="4" text="Cuarto lavado"/>
-                        <CheckboxComp col="4" text="Cuarto de servicio"/>
+                      <Row className="justify-content-md-center mt-3">
+                        <Col md={3} className="mb-2">
+                          <Form.Select arial-label="Recamaras">
+                            <option>Recamaras</option>
+                            {condicion === 'De linea' && 
+                            <>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                            </>}
+                            {condicion === 'Interes medio' && 
+                            <>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                            </>}
+                            {condicion === 'Campestre' && 
+                            <>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6</option>
+                            </>}
+                          </Form.Select>
+                        </Col>
+                        <Col md={3} className="mb-2">
+                          <Form.Select arial-label="Banos">
+                            <option>Baños</option>
+                            {condicion === 'De linea' && 
+                            <>
+                              <option value="1">1</option>
+                              <option value="1.5">1.5</option>
+                            </>}
+                            {condicion === 'Interes medio' && 
+                            <>
+                              <option value="2">2</option>
+                              <option value="2.5">2.5</option>
+                              <option value="3">3</option>
+                            </>}
+                            {condicion === 'Campestre' && 
+                            <>
+                              <option value="2.5">2.5</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6</option>
+                            </>}
+                          </Form.Select>
+                        </Col>
+                        <Col md={3}>
+                          <Form.Select arial-label="Cocheras">
+                            <option>Cocheras</option>
+                            {condicion === 'De linea' && 
+                            <>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                            </>}
+                            {condicion === 'Interes medio' && 
+                            <>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                            </>}
+                            {condicion === 'Campestre' && 
+                            <>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                            </>}
+                          </Form.Select>
+                        </Col>
                       </Row>
-                      <Row>
-                        <CheckboxComp col="4" text="Sala de TV"/>
-                        <CheckboxComp col="4" text="Vestidor"/>
-                        <CheckboxComp col="4" text="Portico"/>
+                      {/* checks */}
+                      {metros > 100 &&
+                      <>
+                        <Row className="justify-content-md-center mt-3">
+                          <CheckboxComp col="auto" text="Estudio"/>
+                          <CheckboxComp col="auto" text="Cuarto lavado"/>
+                          <CheckboxComp col="auto" text="Cuarto de servicio"/>
+                          <CheckboxComp col="auto" text="Sala de TV"/>
+                        </Row>
+                        <Row className="justify-content-md-center mt-1">
+                          <CheckboxComp col="auto" text="Vestidor"/>
+                          {metros > 250 &&
+                          <>
+                            <CheckboxComp col="auto" text="Portico"/>
+                            <CheckboxComp col="auto" text="Sala de juegos"/>
+                          </>}
+                        </Row>
+                        <Row className="justify-content-md-center">
+                          <InputComp col="3" controlId="otro" type="text" placeholder="Otro"/>
+                        </Row>
+                      </>}
+                      {/* construccion estatica */} 
+                      <Row className="justify-content-md-center mt-2">
+                        <Col md={9} className="mt-2">
+                          <h6>Para tu casa tambien se contempla:</h6>
+                          {condicion === 'De linea' && <p>Sala, comedor y cocina.</p>}
+                          {condicion === 'Interes medio' && <p>Sala, comedor, cocina, desayunador y vestidor.</p>}
+                          {condicion === 'Campestre' && <p>Sala, comedor, cocina, desayunador, vestidor y con Isla.</p>}
+                        </Col>   
                       </Row>
-                      <Row style={{justifyContent: "center"}}>
-                        <InputComp col="4" controlId="otro" type="text" placeholder="Otro"/>
-                      </Row>
-                    </>}
-
+                    </> 
+                    }
                     <Row style={{justifyContent: "flex-end"}}>
                       <Col md={2} className="mt-2">
                         <Button
