@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../assets/css/templatemo-plot-listing.css";
 import { NavBar } from "../components/NavBar";
@@ -32,97 +33,59 @@ function Contacto() {
         </div>
       </div>
       {/* formulario */}
-      <div className="contact-page">
-        <div className="container">
-          <h2 className="text-center">Formulario</h2>
-          <br />
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="inner-content">
-                <div className="row">
-                  <div className="col-lg-6">
-                    <div id="map">
-                      <img src={imgSala} alt="Foto sala" />
-                    </div>
-                  </div>
-                  <div className="col-lg-6 align-self-center">
-                    <form id="contact" action="" method="get">
-                      <div className="row">
-                        <div className="col-lg-12">
-                          <fieldset>
-                            <input
-                              type="name"
-                              name="name"
-                              id="name"
-                              placeholder="Nombre completo"
-                              autoComplete="on"
-                              required=""
-                            />
-                          </fieldset>
-                        </div>
-                        <div className="col-lg-6">
-                          <fieldset>
-                            <input
-                              type="text"
-                              name="direccion"
-                              id="direccion"
-                              placeholder="Dirección"
-                              autoComplete="on"
-                              required=""
-                            />
-                          </fieldset>
-                        </div>
-                        <div className="col-lg-6">
-                          <fieldset>
-                            <input
-                              type="number"
-                              name="phone"
-                              id="phone"
-                              placeholder="Whatsapp"
-                              required=""
-                            />
-                          </fieldset>
-                        </div>
-                        <div className="col-lg-12">
-                          <fieldset>
-                            <label htmlFor="motivo">Motivo:</label>
-                            <select
-                              className="form-select"
-                              id="motivo"
-                              aria-label="Motivo"
-                            >
-                              <option selected="" disabled="">
-                                -- Selecciona una opción --
-                              </option>
-                              <option value={1}>Obra nueva Casa-habitación</option>
-                              <option value={2}>Licencia de construcción</option>
-                              <option value={3}>Ampliación habitacional</option>
-                              <option value={4}>Local comercial</option>
-                              <option value={5}>Plaza comercial</option>
-                              <option value={6}>Regularización de obra</option>
-                            </select>
-                          </fieldset>
-                        </div>
-                        <div className="col-lg-12 mt-4">
-                          <fieldset>
-                            <button
-                              type="submit"
-                              id="form-submit"
-                              className="main-button">
-                              <FiSend />
-                              Confirmar
-                            </button>
-                          </fieldset>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
+      <Container style={{paddingTop: 24}}>
+        <h2 className="text-center">Formulario</h2>
+        <br />
+        <Row>
+          <Col lg={6}>
+            <div id="map">
+              <img src={imgSala} alt="Foto sala" />
             </div>
-          </div>
-        </div>
-      </div>
+          </Col>
+          <Col lg={6} className="align-self-center">
+            <Form id="contact" action="" method="get">
+              <Row>
+                <Col lg={12}>
+                  <Form.Group>
+                    <Form.Control type="name" name="name" id="name" placeholder="Nombre completo" autoComplete="on" required="" />
+                  </Form.Group>
+                </Col>
+                <Col lg={6}>
+                  <Form.Group>
+                    <Form.Control type="text" name="direccion" id="direccion" placeholder="Dirección" autoComplete="on" required="" />
+                  </Form.Group>
+                </Col>
+                <Col lg={6}>
+                  <Form.Group>
+                    <Form.Control type="number" name="phone" id="phone" placeholder="Whatsapp" required="" />
+                  </Form.Group>
+                </Col>
+                <Col lg={12}>
+                  <Form.Group>
+                    <Form.Label htmlFor="motivo">Motivo:</Form.Label>
+                    <Form.Control as="select" className="form-select" id="motivo" aria-label="Motivo" defaultValue={0}>
+                      <option disabled value={0}>-- Selecciona una opción --</option>
+                      <option value={1}>Obra nueva Casa-habitación</option>
+                      <option value={2}>Licencia de construcción</option>
+                      <option value={3}>Ampliación habitacional</option>
+                      <option value={4}>Local comercial</option>
+                      <option value={5}>Plaza comercial</option>
+                      <option value={6}>Regularización de obra</option>
+                    </Form.Control>
+                  </Form.Group>
+                </Col>
+                <Col lg={12} className="mt-4">
+                  <Button type="submit" id="form-submit" className="main-button">
+                    <FiSend />
+                    Confirmar
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
+      {/* Footer */}
       <Footer />
     </div>
     );

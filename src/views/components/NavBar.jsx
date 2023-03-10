@@ -1,6 +1,7 @@
 import React, {useState} from "react"
 import { NavLink } from "react-router-dom";
 import { Navbar, Nav, Container, Image } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import Logo from '../../assets/images/logos/Icono_Konstruktor.png';
 export const NavBar = () => {
@@ -19,12 +20,12 @@ export const NavBar = () => {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" onClick={handleNavCollapse} />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link as={NavLink} to="/" exact activeClassName="active">Inicio</Nav.Link>
-                        <Nav.Link as={NavLink} to="/nosotros" activeClassName="active">Nosotros</Nav.Link>
-                        <Nav.Link as={NavLink} to="/constructoras" activeClassName="active">Constructoras</Nav.Link>
-                        {/* <Nav.Link as={NavLink} to="/cotizador" activeClassName="active">Cotizador</Nav.Link>
-                        <Nav.Link as={NavLink} to="/contacto" activeClassName="active">Contacto</Nav.Link>
-                        <Nav.Link as={NavLink} to="/login" activeClassName="active">Login</Nav.Link> */}
+                        <Nav.Link as={NavLink} to="/" exact="true" >Inicio</Nav.Link>
+                        <Nav.Link as={NavLink} to="/nosotros" >Nosotros</Nav.Link>
+                        <Nav.Link as={NavLink} to="/constructoras" >Constructoras</Nav.Link>
+                        <Nav.Link as={NavLink} to="/cotizador" >Cotizador</Nav.Link>
+                        <Nav.Link as={NavLink} to="/contacto" >Contacto</Nav.Link>
+                        <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
