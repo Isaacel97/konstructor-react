@@ -35,7 +35,7 @@ function IngCivil() {
         </h6>
         <br />
         <h5>Requsitos de licencia de construcción para Casa Habitación</h5>
-        <i>Aplicable en el municipio de Querétaro</i>
+        <i>Aplicable en el municipio de <a href="https://tramitesqro.municipiodequeretaro.gob.mx">Querétaro</a></i>
         <ol>
         <li>Solicitud (Firma DRO y Propietario)</li>
         <li>Carta responsiva DRO (Firma DRO) Anverso y Reverso</li>

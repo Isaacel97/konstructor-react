@@ -18,20 +18,20 @@ export const Footer = () => {
             <div className="col-lg-6">
               <div className="contact-us">
                 <h4>Contactanos</h4>
-                <p>27th Street of New Town, Digital Villa</p>
+                <p>Con gusto te atenderemos</p>
                 <div className="row">
                   <div className="col-lg-6">
-                    <a href="#">010-020-0340</a>
+                    <p>442-449-9749</p>
                   </div>
                   <div className="col-lg-6">
-                    <a href="#">090-080-0760</a>
+                    <p>contacto@konstruktor.com.mx</p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="col-lg-12">
               <div className="sub-footer">
-                <p>Desarrollado por <a rel="nofollow" href="https://impactosdigitales.com/" title="CSS Templates">Impactos Digitales</a></p>
+                <p>Desarrollado por <a rel="nofollow" href="https://icandelario-dev.com/" title="CSS Templates">DEVDO</a></p>
                 <br />
               </div>
             </div>

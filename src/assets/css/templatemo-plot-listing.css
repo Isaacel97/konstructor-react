@@ -732,7 +732,7 @@ Banner Style
   background-position: center center;
   background-size: cover;
   background-image: url(../images/banner-bg.jpg);
-  padding: 290px 0px 180px 0px;
+  padding: 90px 0px 75px 0px;
   position: relative;
   overflow: hidden;
 }
