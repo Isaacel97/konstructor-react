@@ -1,5 +1,6 @@
-const baseUrl = 'http://127.0.0.1:8000/api/';
-export const url = 'http://127.0.0.1:8000';
+//const baseUrl = 'https://icandelario-dev.com//back/public/api/';
+const baseUrl = 'http://localhost:8000/api/';
+export const url = 'http://localhost:3000';
 
 export const get = async (path) => {
     return fetch(baseUrl + path)

@@ -16,15 +16,28 @@ function Inicio() {
     document.title = "Si vas a construir una casa en Querétaro, cotiza Ws 4424499749";
     const descriptionMeta = document.querySelector('meta[name="description"]');
     if (descriptionMeta) {
-      descriptionMeta.setAttribute("content", "Obtén un presupuesto en línea y conoce los permisos que necesitas para construir casa, local o residencia en Querétaro; ingenieros civiles y arquitectos experimentados");
+      descriptionMeta.setAttribute(
+        "content",
+        "Obtén un presupuesto en línea y conoce los permisos que necesitas para construir casa, local o residencia en Querétaro; ingenieros civiles y arquitectos experimentados."
+      );
     }
   }, []);
-  const contenido1 = <div><h1>Si vas a construir una casa en Querétaro, primero entérate de los permisos que necesitarás:</h1><br/><p>Para tramitar tu <strong>licencia de construcción</strong> lo primero que tienes que buscar es la empresa constructora que disponga de arquitectos e ingenieros que realicen el estudio del proyecto y elaboren los planos, los cuales deberán ser entregados en la Oficina de <strong>Desarrollo Urbano</strong> de cada municipio de Querétaro para la solicitud de construcción y pago de permisos y licencias, presentando además de los planos el Certificado de uso del suelo y el Registro de Manifestación de la construcción. Posteriormente sigue estos <a href={url + 'arquitectos-en-queretaro/'}>11 pasos</a> que te indicamos para construir tu casa en Querétaro</p></div>;
+
+  const title = "Si vas a construir una casa en Querétaro, primero entérate de los permisos que necesitarás:";
+  const contenido1 = (
+    <>
+      <h1>{title}</h1>
+      <br />
+      <p>
+        Para tramitar tu <strong>licencia de construcción</strong> lo primero que tienes que buscar es la empresa constructora que disponga de arquitectos e ingenieros que realicen el estudio del proyecto y elaboren los planos, los cuales deberán ser entregados en la Oficina de <strong>Desarrollo Urbano</strong> de cada municipio de Querétaro para la solicitud de construcción y pago de permisos y licencias, presentando además de los planos el Certificado de uso del suelo y el Registro de Manifestación de la construcción. Posteriormente sigue estos <a href={url + '/constructoras'}>11 pasos</a> que te indicamos para construir tu casa en Querétaro
+      </p>
+    </>
+  );
 
   const contenido2 = 
     <div className="row">
       <div className="col-lg-8">
-        <a href="contact.html">
+        <a href={url + '/contacto'}>
           <img src={Slidecontact} alt="Contacto" className="img-fluid" />
         </a>
       </div>

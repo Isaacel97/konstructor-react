@@ -2,8 +2,8 @@ import React, {useState} from "react"
 import { NavLink } from "react-router-dom";
 import { Navbar, Nav, Container, Image } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import Logo from '../../assets/images/logos/Icono_Konstruktor.png';
+
 export const NavBar = () => {
     const [expanded, setExpanded] = useState(false);
 

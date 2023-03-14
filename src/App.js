@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { NativeBaseProvider, Text, Box } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import Inicio from './views/public/Inicio'
 import QuienesSomos from './views/public/QuienesSomos'
 import IngCivil from './views/public/IngCivil'
