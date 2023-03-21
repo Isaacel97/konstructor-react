@@ -8,6 +8,7 @@ import IngCivil from './views/public/IngCivil'
 import Cotizador from './views/private/Cotizador';
 import Contacto from './views/public/Contacto';
 import Login from './views/public/Login';
+import MenuDrawer from './views/components/MenuDrawer';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/constructoras" element={<IngCivil />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/menu" element={<MenuDrawer />} />
         </Routes>
       </BrowserRouter>
     </NativeBaseProvider>

@@ -22,10 +22,11 @@ export const NavBar = () => {
                     <Nav className="me-auto">
                         <Nav.Link as={NavLink} to="/" exact="true" >Inicio</Nav.Link>
                         <Nav.Link as={NavLink} to="/nosotros" >Nosotros</Nav.Link>
-                        <Nav.Link as={NavLink} to="/constructoras" >Constructoras</Nav.Link>
-                        <Nav.Link as={NavLink} to="/cotizador" >Cotizador</Nav.Link>
-                        <Nav.Link as={NavLink} to="/contacto" >Contacto</Nav.Link>
+                        <Nav.Link as={NavLink} to="/constructoras">Constructoras</Nav.Link>
+                        <Nav.Link as={NavLink} to="/cotizador">Cotizador</Nav.Link>
+                        <Nav.Link as={NavLink} to="/contacto">Contacto</Nav.Link>
                         <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+                        <Nav.Link as={NavLink} to="/menu">Menu</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

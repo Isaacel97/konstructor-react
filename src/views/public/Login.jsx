@@ -19,7 +19,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const validPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-  const validEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  const validEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
   const validPhone = /^\d{10}$/;
   const validName = /^[a-zA-ZÀ-ÿ\s]{1,40}$/;
   const [errors, setErrors] = useState(false);
