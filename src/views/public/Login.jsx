@@ -1,140 +1,183 @@
-import React, {useEffect, useState} from 'react';
-import { View, Stack, FormControl, Input, Button, HStack, VStack, Image, Text } from 'native-base';
-import { NavBar } from '../components/NavBar';
-import imgSala from '../../assets/images/listing-01.jpg';
-import { AiFillEye, AiFillEyeInvisible, AiOutlineInfoCircle } from 'react-icons/ai';
-
+import React, { useEffect, useState } from "react"
+import {
+  View,
+  Stack,
+  FormControl,
+  Input,
+  Button,
+  HStack,
+  VStack,
+  Image,
+  Text,
+} from "native-base"
+import { NavBar } from "../components/NavBar"
+import imgSala from "../../assets/images/listing-01.jpg"
+import {
+  AiFillEye,
+  AiFillEyeInvisible,
+  AiOutlineInfoCircle,
+} from "react-icons/ai"
+import axios from "axios"
 const Login = () => {
   useEffect(() => {
-    document.title = "Si vas a construir una casa en Querétaro, cotiza Ws 4424499749";
-    document.querySelector('meta[name="description"]').setAttribute("content", "Obtén un presupuesto en línea y conoce los permisos que necesitas para construir casa, local o residencia en Querétaro; ingenieros civiles y arquitectos experimentados");
-  }, []);
+    document.title =
+      "Si vas a construir una casa en Querétaro, cotiza Ws 4424499749"
+    document
+      .querySelector('meta[name="description"]')
+      .setAttribute(
+        "content",
+        "Obtén un presupuesto en línea y conoce los permisos que necesitas para construir casa, local o residencia en Querétaro; ingenieros civiles y arquitectos experimentados"
+      )
+  }, [])
 
-  const [nombre, setNombre] = useState('');
-  const [apellidos, setApellidos] = useState('');
-  const [correo, setCorreo] = useState('');
-  const [telefono, setTelefono] = useState('');
-  const [Password, setPassword] = useState('');
-  const [confirmarPassword, setConfirmarPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const validPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-  const validEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-  const validPhone = /^\d{10}$/;
-  const validName = /^[a-zA-ZÀ-ÿ\s]{1,40}$/;
-  const [errors, setErrors] = useState(false);
+  const [correo, setCorreo] = useState("")
+  const [correoError, setCorreoError] = useState("")
+  const [password, setPassword] = useState("")
+  const [passwordError, setPasswordError] = useState("")
 
-  const handleSubmit = () => {
-    console.log('Nombre:', nombre);
-    console.log('Apellidos:', apellidos);
-    console.log('Correo:', correo);
-    console.log('Telefono:', telefono);
-    console.log('Contraseña:', Password);
+  const [showPassword, setShowPassword] = useState(false)
+
+  const validPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+  const validEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
+
+  const [errors, setErrors] = useState(false)
+
+  const handleSubmit = async () => {
+    console.log("Correo:", correo)
+    console.log("Contraseña:", password)
+
+    const response = await axios.post("http://127.0.0.1:8000/api/user/login/", {
+      email: correo,
+      password,
+    })
+    console.log("response", response)
+
+    if (response.status === 401) {
+      setPasswordError(response.message)
+    }
+    if (response.status === 404) {
+      setCorreoError(response.message)
+    }
   }
 
   const togglePassword = () => {
-    setShowPassword(!showPassword);
-  }
-
-  const toggleConfirmPassword = () => {
-    setShowConfirmPassword(!showConfirmPassword);
+    setShowPassword(!showPassword)
   }
 
   const handleErrors = () => {
-    if (nombre === '' || !validName.test(nombre)) {
-      setErrors(true);
-    } else if (apellidos === '' || !validName.test(apellidos)) {
-      setErrors(true);
-    } else if (correo === '' || !validEmail.test(correo)) {
-      setErrors(true);
-    } else if (telefono === '' || !validPhone.test(telefono)) {
-      setErrors(true);
-    } else if (Password === '' || !validPassword.test(Password)) {
-      setErrors(true);
-    } else if (confirmarPassword === '' || confirmarPassword !== Password) {
-      setErrors(true);
-    } else {
-      setErrors(false);
-      handleSubmit();
+    const validated = validate()
+    if (validated) {
+      setCorreoError(false)
+      setPasswordError(false)
+      handleSubmit()
     }
+  }
+
+  function validate() {
+    let x = 0
+    if (correo === "" || !validEmail.test(correo)) {
+      setCorreoError("Ingresa un correo válido")
+      x = 1
+    } else {
+      setCorreoError("")
+    }
+    if (password === "" || !validPassword) {
+      setPasswordError("Ingresa una contraseña válida")
+      x = 1
+    } else if (password.length < 8) {
+      setPasswordError("La contraseña debe tener al menos 8 caracteres")
+    } else {
+      setPasswordError("")
+    }
+    if (x === 1) return false
+    return true
   }
 
   return (
     <>
       <NavBar />
-      <View flex={1} alignItems='center' mt={4}>
-        <h2>Registro</h2>
-        <HStack style={{width: "90%", height: "100%"}} space={1} mt={3}>
+      <View
+        flex={1}
+        alignItems="center"
+        mt={4}
+      >
+        <h2>Iniciar sesión</h2>
+        <HStack
+          style={{ width: "90%", height: "100%" }}
+          space={1}
+          mt={3}
+        >
           <VStack flex={1}>
-            <Image source={imgSala} size='full' resizeMode='cover' alt={"Foto sala"} />
+            <Image
+              source={imgSala}
+              size="full"
+              resizeMode="cover"
+              alt={"Foto sala"}
+            />
           </VStack>
           <VStack flex={1}>
-            <FormControl isInvalid={errors}>
+            <FormControl>
               <Stack>
-                <FormControl.Label>Nombre</FormControl.Label>
-                <Input placeholder="Ingresa tu nombre" variant={'filled'} value={nombre} onChangeText={setNombre} type="text"/>
-                <FormControl.ErrorMessage leftIcon={<AiOutlineInfoCircle/>}>
-                  El nombre no es valido.
-                </FormControl.ErrorMessage>
+                <FormControl.Label htmlFor="email">Correo</FormControl.Label>
+                <Input
+                  placeholder="ejemplo@email.com"
+                  id="email"
+                  variant={"filled"}
+                  value={correo}
+                  onChangeText={setCorreo}
+                  type="email"
+                  isInvalid={correoError}
+                />
+                <FormControl isInvalid={correoError}>
+                  <FormControl.ErrorMessage leftIcon={<AiOutlineInfoCircle />}>
+                    {correoError}
+                  </FormControl.ErrorMessage>
+                </FormControl>
               </Stack>
               <Stack>
-                <FormControl.Label>Apellidos</FormControl.Label>
-                <Input placeholder="Ingresa tus apellidos" variant={'filled'} value={apellidos} onChangeText={setApellidos} type="text"/>
-                <FormControl.ErrorMessage leftIcon={<AiOutlineInfoCircle/>}>
-                  Los apellidos no son validos.
-                </FormControl.ErrorMessage>
-              </Stack>
-              <Stack>
-                <FormControl.Label>Correo</FormControl.Label>
-                <Input placeholder="ejemplo@email.com" variant={'filled'} value={correo} onChangeText={setCorreo} type="email"/>
-                <FormControl.ErrorMessage leftIcon={<AiOutlineInfoCircle/>}>
-                  El correo no es válido.
-                </FormControl.ErrorMessage>
-              </Stack>
-              <Stack>
-                <FormControl.Label>Teléfono</FormControl.Label>
-                <Input placeholder="Ingresa tu telefono" variant={'filled'} value={telefono} onChangeText={setTelefono} type="phone-pad"/>
-                <FormControl.ErrorMessage leftIcon={<AiOutlineInfoCircle/>}>
-                  El teléfono debe tener 10 dígitos.
-                </FormControl.ErrorMessage>
-              </Stack>
-              <Stack>
-                <FormControl.Label htmlFor="password">Contraseña</FormControl.Label>
+                <FormControl.Label htmlFor="password">
+                  Contraseña
+                </FormControl.Label>
                 <HStack>
-                  <Input placeholder="Ingresa tu password" id="password" variant={'filled'} value={Password} onChangeText={setPassword} secureTextEntry={!showPassword} type="password"/>
-                  <Button aria-label="Mostrar/ocultar contraseña" onPress={togglePassword} size='md' colorScheme="dark">
-                    {showPassword ? <AiFillEyeInvisible/> : <AiFillEye/>}
+                  <Input
+                    placeholder="Ingresa tu password"
+                    id="password"
+                    variant={"filled"}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                    type="password"
+                    isInvalid={passwordError}
+                  />
+                  <Button
+                    aria-label="Mostrar/ocultar contraseña"
+                    onPress={togglePassword}
+                    size="md"
+                    colorScheme="dark"
+                  >
+                    {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
                   </Button>
                 </HStack>
-                
-                <FormControl.HelperText htmlFor="password">
-                  La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.
-                </FormControl.HelperText>
-                <FormControl.ErrorMessage htmlFor="password" leftIcon={<AiOutlineInfoCircle/>}>
-                  Contraseña inválida.
-                </FormControl.ErrorMessage>
+                <FormControl isInvalid={passwordError}>
+                  <FormControl.ErrorMessage leftIcon={<AiOutlineInfoCircle />}>
+                    {passwordError}
+                  </FormControl.ErrorMessage>
+                </FormControl>
               </Stack>
-              <Stack>
-                <FormControl.Label id="label" htmlFor="confirm-password">Confirmar contraseña</FormControl.Label>
-                <HStack>
-                  <Input placeholder="Confirma tu password" id="confirm-password" variant={'filled'} value={confirmarPassword} onChangeText={setConfirmarPassword} secureTextEntry={!showConfirmPassword} type="password"/>
-                  <Button aria-label="Mostrar/ocultar confirmar contraseña" onPress={toggleConfirmPassword} size='md' colorScheme="dark">
-                    {showConfirmPassword ? <AiFillEyeInvisible/> : <AiFillEye/>}
-                  </Button>
-                </HStack>
-                <FormControl.ErrorMessage htmlFor="confirm-password" leftIcon={<AiOutlineInfoCircle/>}>
-                  Las contraseñas no coinciden.
-                </FormControl.ErrorMessage>
-              </Stack>
-              <Button onPress={handleErrors} size='md' colorScheme="dark" mt={2}>
-                <Text>Registrarse</Text>
+              <Button
+                onPress={handleErrors}
+                size="md"
+                colorScheme="dark"
+                mt={2}
+              >
+                <Text>Iniciar sesión</Text>
               </Button>
             </FormControl>
           </VStack>
         </HStack>
       </View>
     </>
-  );
+  )
 }
 
-export default Login;
+export default Login
