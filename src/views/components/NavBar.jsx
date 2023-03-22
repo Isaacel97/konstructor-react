@@ -3,13 +3,17 @@ import { NavLink } from "react-router-dom"
 import { Navbar, Nav, Container, Image } from "react-bootstrap"
 import "bootstrap/dist/css/bootstrap.min.css"
 import Logo from "../../assets/images/logos/Icono_Konstruktor.png"
+import { useAuthUser, useSignOut } from "react-auth-kit"
 
 export const NavBar = () => {
   const [expanded, setExpanded] = useState(false)
-
   const handleNavCollapse = () => {
     setExpanded(!expanded)
   }
+
+  const auth = useAuthUser()
+  const signOut = useSignOut()
+
   return (
     <>
       <Navbar
@@ -67,12 +71,23 @@ export const NavBar = () => {
               >
                 Contacto
               </Nav.Link>
-              <Nav.Link
-                as={NavLink}
-                to="/login"
-              >
-                Login
-              </Nav.Link>
+
+              {auth() ? (
+                <Nav.Link
+                  as={NavLink}
+                  to="/"
+                  onClick={() => signOut()}
+                >
+                  Logout
+                </Nav.Link>
+              ) : (
+                <Nav.Link
+                  as={NavLink}
+                  to="/login"
+                >
+                  Login
+                </Nav.Link>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

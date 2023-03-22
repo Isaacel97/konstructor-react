@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   View,
   Stack,
@@ -18,7 +19,18 @@ import {
   AiOutlineInfoCircle,
 } from "react-icons/ai"
 import axios from "axios"
+import { useSignIn } from "react-auth-kit"
+import { baseUrl } from "../../api/ws"
+
 const Login = () => {
+  const navigate = useNavigate()
+  const [errors, setErrors] = useState({})
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const validPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+  const validEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
+  const signIn = useSignIn()
   useEffect(() => {
     document.title =
       "Si vas a construir una casa en Querétaro, cotiza Ws 4424499749"
@@ -30,33 +42,36 @@ const Login = () => {
       )
   }, [])
 
-  const [correo, setCorreo] = useState("")
-  const [correoError, setCorreoError] = useState("")
-  const [password, setPassword] = useState("")
-  const [passwordError, setPasswordError] = useState("")
-
-  const [showPassword, setShowPassword] = useState(false)
-
-  const validPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
-  const validEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
-
-  const [errors, setErrors] = useState(false)
-
   const handleSubmit = async () => {
-    console.log("Correo:", correo)
+    console.log("Correo:", email)
     console.log("Contraseña:", password)
 
-    const response = await axios.post("http://127.0.0.1:8000/api/user/login/", {
-      email: correo,
-      password,
-    })
-    console.log("response", response)
+    try {
+      const { data } = await axios.post(baseUrl + "user/login/", {
+        email,
+        password,
+      })
+      console.log(data)
+      if (data.status === 401) {
+        setErrors({ password: data.message })
+      }
+      if (data.status === 404) {
+        setErrors({ email: data.message })
+      }
 
-    if (response.status === 401) {
-      setPasswordError(response.message)
-    }
-    if (response.status === 404) {
-      setCorreoError(response.message)
+      signIn({
+        token: data.token,
+        expiresIn: 3600,
+        tokenType: "Bearer",
+        authState: { email: email },
+      })
+
+      //navigate back
+      navigate("/cotizador")
+
+      console.log("response", data)
+    } catch (error) {
+      console.log("error", error)
     }
   }
 
@@ -65,31 +80,31 @@ const Login = () => {
   }
 
   const handleErrors = () => {
+    console.log("validando")
     const validated = validate()
+    console.log(errors)
     if (validated) {
-      setCorreoError(false)
-      setPasswordError(false)
+      setErrors({})
       handleSubmit()
     }
   }
 
   function validate() {
-    let x = 0
-    if (correo === "" || !validEmail.test(correo)) {
-      setCorreoError("Ingresa un correo válido")
-      x = 1
-    } else {
-      setCorreoError("")
+    setErrors({})
+
+    if (email === "" || !validEmail.test(email)) {
+      console.log("correo mal ")
+      setErrors({ email: "Ingresa un correo válido" })
+      return false
     }
     if (password === "" || !validPassword) {
-      setPasswordError("Ingresa una contraseña válida")
-      x = 1
+      console.log("contraseña mal ")
+      setErrors({ password: "Ingresa una contraseña válida" })
+      return false
     } else if (password.length < 8) {
-      setPasswordError("La contraseña debe tener al menos 8 caracteres")
-    } else {
-      setPasswordError("")
+      setErrors({ password: "La contraseña debe tener al menos 8 caracteres" })
+      return false
     }
-    if (x === 1) return false
     return true
   }
 
@@ -123,16 +138,17 @@ const Login = () => {
                   placeholder="ejemplo@email.com"
                   id="email"
                   variant={"filled"}
-                  value={correo}
-                  onChangeText={setCorreo}
+                  value={email}
+                  onChangeText={setEmail}
                   type="email"
-                  isInvalid={correoError}
+                  isInvalid={"email" in errors}
                 />
-                <FormControl isInvalid={correoError}>
-                  <FormControl.ErrorMessage leftIcon={<AiOutlineInfoCircle />}>
-                    {correoError}
-                  </FormControl.ErrorMessage>
-                </FormControl>
+                <FormControl.ErrorMessage
+                  leftIcon={<AiOutlineInfoCircle />}
+                  isInvalid={"email" in errors}
+                >
+                  {errors.email}
+                </FormControl.ErrorMessage>
               </Stack>
               <Stack>
                 <FormControl.Label htmlFor="password">
@@ -147,7 +163,7 @@ const Login = () => {
                     onChangeText={setPassword}
                     secureTextEntry={!showPassword}
                     type="password"
-                    isInvalid={passwordError}
+                    isInvalid={"password" in errors}
                   />
                   <Button
                     aria-label="Mostrar/ocultar contraseña"
@@ -158,11 +174,12 @@ const Login = () => {
                     {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
                   </Button>
                 </HStack>
-                <FormControl isInvalid={passwordError}>
-                  <FormControl.ErrorMessage leftIcon={<AiOutlineInfoCircle />}>
-                    {passwordError}
-                  </FormControl.ErrorMessage>
-                </FormControl>
+                <FormControl.ErrorMessage
+                  leftIcon={<AiOutlineInfoCircle />}
+                  isInvalid={"password" in errors}
+                >
+                  {errors.password}
+                </FormControl.ErrorMessage>
               </Stack>
               <Button
                 onPress={handleErrors}
