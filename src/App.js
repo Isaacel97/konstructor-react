@@ -51,7 +51,7 @@ function App() {
               element={<Login />}
             />
             <Route
-              path="/register"
+              path="/registro"
               element={<Register />}
             />
           </Routes>

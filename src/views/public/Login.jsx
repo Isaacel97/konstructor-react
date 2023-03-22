@@ -7,9 +7,11 @@ import {
   Input,
   Button,
   HStack,
-  VStack,
   Image,
   Text,
+  Link,
+  Box,
+  Center,
 } from "native-base"
 import { NavBar } from "../components/NavBar"
 import imgSala from "../../assets/images/listing-01.jpg"
@@ -43,9 +45,6 @@ const Login = () => {
   }, [])
 
   const handleSubmit = async () => {
-    console.log("Correo:", email)
-    console.log("Contraseña:", password)
-
     try {
       const { data } = await axios.post(baseUrl + "user/login/", {
         email,
@@ -58,18 +57,15 @@ const Login = () => {
       if (data.status === 404) {
         setErrors({ email: data.message })
       }
-
-      signIn({
-        token: data.token,
-        expiresIn: 3600,
-        tokenType: "Bearer",
-        authState: { email: email },
-      })
-
-      //navigate back
-      navigate("/cotizador")
-
-      console.log("response", data)
+      if (data.status === 200) {
+        signIn({
+          token: data.token,
+          expiresIn: 3600,
+          tokenType: "Bearer",
+          authState: { email: email },
+        })
+        navigate("/cotizador")
+      }
     } catch (error) {
       console.log("error", error)
     }
@@ -88,17 +84,13 @@ const Login = () => {
       handleSubmit()
     }
   }
-
   function validate() {
     setErrors({})
-
     if (email === "" || !validEmail.test(email)) {
-      console.log("correo mal ")
       setErrors({ email: "Ingresa un correo válido" })
       return false
     }
     if (password === "" || !validPassword) {
-      console.log("contraseña mal ")
       setErrors({ password: "Ingresa una contraseña válida" })
       return false
     } else if (password.length < 8) {
@@ -111,87 +103,107 @@ const Login = () => {
   return (
     <>
       <NavBar />
-      <View
-        flex={1}
-        alignItems="center"
-        mt={4}
-      >
-        <h2>Iniciar sesión</h2>
-        <HStack
-          style={{ width: "90%", height: "100%" }}
-          space={1}
-          mt={3}
-        >
-          <VStack flex={1}>
-            <Image
-              source={imgSala}
-              size="full"
-              resizeMode="cover"
-              alt={"Foto sala"}
-            />
-          </VStack>
-          <VStack flex={1}>
-            <FormControl>
-              <Stack>
-                <FormControl.Label htmlFor="email">Correo</FormControl.Label>
-                <Input
-                  placeholder="ejemplo@email.com"
-                  id="email"
-                  variant={"filled"}
-                  value={email}
-                  onChangeText={setEmail}
-                  type="email"
-                  isInvalid={"email" in errors}
-                />
-                <FormControl.ErrorMessage
-                  leftIcon={<AiOutlineInfoCircle />}
-                  isInvalid={"email" in errors}
-                >
-                  {errors.email}
-                </FormControl.ErrorMessage>
-              </Stack>
-              <Stack>
-                <FormControl.Label htmlFor="password">
-                  Contraseña
-                </FormControl.Label>
-                <HStack>
+      <View>
+        <Center mt={16}>
+          <h2>Iniciar sesión</h2>
+          <HStack
+            bg="white"
+            rounded="lg"
+            overflow="hidden"
+            w="100%"
+            h="600px"
+            p={16}
+            direction="row"
+            space={8}
+          >
+            <Box w={"50%"}>
+              <Image
+                source={imgSala}
+                alt="Segun Adebayo"
+                size="100%"
+                rounded="lg"
+                resizeMode="cover"
+              />
+            </Box>
+            <Box
+              w={"50%"}
+              paddingX={8}
+            >
+              <FormControl>
+                <Stack>
+                  <FormControl.Label htmlFor="email">
+                    Correo electrónico
+                  </FormControl.Label>
                   <Input
-                    placeholder="Ingresa tu password"
-                    id="password"
+                    placeholder="ejemplo@email.com"
+                    id="email"
                     variant={"filled"}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    type="password"
-                    isInvalid={"password" in errors}
+                    value={email}
+                    onChangeText={setEmail}
+                    type="email"
+                    isInvalid={"email" in errors}
                   />
-                  <Button
-                    aria-label="Mostrar/ocultar contraseña"
-                    onPress={togglePassword}
-                    size="md"
-                    colorScheme="dark"
+                  <FormControl.ErrorMessage
+                    leftIcon={<AiOutlineInfoCircle />}
+                    isInvalid={"email" in errors}
                   >
-                    {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-                  </Button>
-                </HStack>
-                <FormControl.ErrorMessage
-                  leftIcon={<AiOutlineInfoCircle />}
-                  isInvalid={"password" in errors}
+                    {errors.email}
+                  </FormControl.ErrorMessage>
+                </Stack>
+                <Stack>
+                  <FormControl.Label htmlFor="password">
+                    Contraseña
+                  </FormControl.Label>
+                  <HStack w={"full"}>
+                    <Input
+                      placeholder="Ingresa tu password"
+                      id="password"
+                      variant={"filled"}
+                      value={password}
+                      onChangeText={setPassword}
+                      secureTextEntry={!showPassword}
+                      type="password"
+                      isInvalid={"password" in errors}
+                      w={"95%"}
+                    />
+                    <Button
+                      aria-label="Mostrar/ocultar contraseña"
+                      onPress={togglePassword}
+                      size="md"
+                      colorScheme="dark"
+                      w={"5%"}
+                    >
+                      {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                    </Button>
+                  </HStack>
+                  <FormControl.ErrorMessage
+                    leftIcon={<AiOutlineInfoCircle />}
+                    isInvalid={"password" in errors}
+                  >
+                    {errors.password}
+                  </FormControl.ErrorMessage>
+                </Stack>
+                <Button
+                  onPress={handleErrors}
+                  size="md"
+                  colorScheme="dark"
+                  mt={8}
                 >
-                  {errors.password}
-                </FormControl.ErrorMessage>
-              </Stack>
-              <Button
-                onPress={handleErrors}
-                size="md"
-                colorScheme="dark"
-                mt={2}
-              >
-                <Text>Iniciar sesión</Text>
-              </Button>
-            </FormControl>
-          </VStack>
-        </HStack>
+                  <Text>Iniciar sesión</Text>
+                </Button>
+              </FormControl>
+              <HStack alignSelf={"center"}>
+                <Text mt={2}> ¿No tienes cuenta? </Text> <br />
+                <Link
+                  href="/registro"
+                  alignSelf={"end"}
+                >
+                  Regístrate
+                </Link>
+              </HStack>
+            </Box>
+          </HStack>
+        </Center>
       </View>
     </>
   )
