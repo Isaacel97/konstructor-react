@@ -71,7 +71,12 @@ export const NavBar = () => {
               >
                 Contacto
               </Nav.Link>
-
+              <Nav.Link
+                as={NavLink}
+                to="/admin"
+              >
+                Admin
+              </Nav.Link>
               {auth() ? (
                 <Nav.Link
                   as={NavLink}

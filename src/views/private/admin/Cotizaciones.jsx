@@ -6,10 +6,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Select, Modal, Button, Text } from "native-base";
+import { Select, Modal, Button, Text, Alert, Center, VStack, HStack, IconButton, Box, View} from "native-base";
 import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import LottieLoader from '../../components/lotties/LottieLoader';
-import { get } from '../../../api/ws'
+import { get, post } from '../../../api/ws'
 
 const Cotizaciones = () => {
   useEffect(() => {
@@ -18,11 +19,23 @@ const Cotizaciones = () => {
     getData();
   }, []);
 
+  //valida loader
   const [loader, setLoader] = useState(true);
+  //valida alerta de status
+  const [showAlert, setShowAlert] = useState(false);
+  // text alert
+  const [alertMessage, setAlertMessage] = useState([]);
+  // color alert
+  const [alertColor, setAlertColor] = useState('');
+  //modal
   const [modalVisible, setModalVisible] = useState(false);
+  //value status
   const [status, setStatus] = useState('');
+  //list status
   const [dataStatus, setDataStatus] = useState([]);
+  //data contact en especifico
   const [dataContact, setDataContact] = useState([]);
+  //data list cotizaciones
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -39,14 +52,44 @@ const Cotizaciones = () => {
     setLoader(false);
   }
 
-  const updateStatus = async () => {
-    console.log("status enviado", status);
+  const updateStatus = async (idCotizacion) => {
+    //preparando data para enviar por post
+    const sendData = {};
+    sendData['id'] = idCotizacion;
+    sendData['status_id'] = status;
+    //obteniendo respuesta y mostrar alerta con mensaje
+    const response = await post(`cotizacion/setStatus`, sendData);
+    setShowAlert(true);
+    setAlertMessage(response);
+    response.status ? setAlertColor('success') : setAlertColor('error');
+    //cerrar alert time
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 2000);
   }
 
   return (
     <>
       {loader ? <LottieLoader /> :
+      <View>
         <TableContainer  component={Paper} style={{margin: 16}}>
+        {/* Alert status */}
+        {showAlert && 
+          <Alert maxW="400" status={alertColor} zIndex={9999} position="fixed" top="10px" right="10px">
+            <VStack space={2} flexShrink={1} w="100%">
+              <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
+                <HStack flexShrink={1} space={2} alignItems="center">
+                  <Alert.Icon />
+                  <Text fontSize="md" fontWeight="medium" color="coolGray.800">
+                  {alertMessage.message}
+                  </Text>
+                </HStack>
+                <IconButton variant="unstyled" _focus={{ borderWidth: 0 }} 
+                icon={<CloseIcon size="3" />} _icon={{ color: "coolGray.600" }} 
+                onPress={() => setShowAlert(false)}/>
+              </HStack>
+            </VStack>
+          </Alert>}
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
@@ -91,7 +134,9 @@ const Cotizaciones = () => {
                 </TableBody>
             </Table>
         </TableContainer>
+      </View>
       }
+      {/* Modal edit status */}
       <Modal isOpen={modalVisible} onClose={setModalVisible} size="xl">
         <Modal.Content>
           <Modal.CloseButton />
@@ -130,7 +175,7 @@ const Cotizaciones = () => {
                 Cerrar
               </Button>
               <Button onPress={() => {
-              updateStatus();
+              updateStatus(dataContact.id);
               setModalVisible(false);
             }}>
                 Guardar

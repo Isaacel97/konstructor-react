@@ -55,8 +55,8 @@ function App() {
               path="/registro"
               element={<Register />}
             />
+            <Route path="/admin" element={<MenuDrawer />} />
           </Routes>
-          <Route path="/menu" element={<MenuDrawer />} />
         </BrowserRouter>
       </NativeBaseProvider>
     </AuthProvider>
