@@ -6,11 +6,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Select, Modal, Button, Text, Alert, Center, VStack, HStack, IconButton, Box, View} from "native-base";
+import { Select, Modal, Button, Text, Alert, VStack, HStack, IconButton, View} from "native-base";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import LottieLoader from '../../components/lotties/LottieLoader';
 import { get, post } from '../../../api/ws'
+import { useAuthUser } from "react-auth-kit"
 
 const Cotizaciones = () => {
   useEffect(() => {
@@ -18,6 +19,8 @@ const Cotizaciones = () => {
     document.querySelector('meta[name="description"]').setAttribute("content", "Gestion de cotizaciones");
     getData();
   }, []);
+  //data user
+  const auth = useAuthUser()
 
   //valida loader
   const [loader, setLoader] = useState(true);
@@ -53,18 +56,21 @@ const Cotizaciones = () => {
   }
 
   const updateStatus = async (idCotizacion) => {
+    const id = auth().id
     //preparando data para enviar por post
     const sendData = {};
     sendData['id'] = idCotizacion;
     sendData['status_id'] = status;
+    sendData['user_id'] = id;
     //obteniendo respuesta y mostrar alerta con mensaje
     const response = await post(`cotizacion/setStatus`, sendData);
     setShowAlert(true);
     setAlertMessage(response);
-    response.status ? setAlertColor('success') : setAlertColor('error');
+    response.estado ? setAlertColor('success') : setAlertColor('error');
     //cerrar alert time
     setTimeout(() => {
       setShowAlert(false);
+      getData();
     }, 2000);
   }
 

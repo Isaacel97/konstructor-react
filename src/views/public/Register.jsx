@@ -186,6 +186,7 @@ const Login = () => {
                     value={email}
                     onChangeText={setEmail}
                     type="email"
+                    id="emailReg"
                     isInvalid={"email" in errors}
                   />
                   <FormControl.ErrorMessage

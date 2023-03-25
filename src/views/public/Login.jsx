@@ -63,6 +63,7 @@ const Login = () => {
           expiresIn: 3600,
           tokenType: "Bearer",
           authState: { email: email },
+          id: data.id,
         })
         navigate("/cotizador")
       }
@@ -105,7 +106,7 @@ const Login = () => {
       <NavBar />
       <View>
         <Center mt={16}>
-          <h2>Iniciar sesión</h2>
+          <Text fontSize="4xl">Iniciar sesión</Text>
           <HStack
             bg="white"
             rounded="lg"
@@ -114,11 +115,11 @@ const Login = () => {
             h="600px"
             p={16}
             direction="row"
-            space={8}
+            spacing={8}
           >
             <Box w={"50%"}>
               <Image
-                source={imgSala}
+                src={imgSala}
                 alt="Segun Adebayo"
                 size="100%"
                 rounded="lg"
@@ -193,11 +194,8 @@ const Login = () => {
                 </Button>
               </FormControl>
               <HStack alignSelf={"center"}>
-                <Text mt={2}> ¿No tienes cuenta? </Text> <br />
-                <Link
-                  href="/registro"
-                  alignSelf={"end"}
-                >
+                <Text mt={2}> ¿No tienes cuenta? </Text>
+                <Link href="/registro" alignSelf={"end"}>
                   Regístrate
                 </Link>
               </HStack>
