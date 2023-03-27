@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
+import { TablePagination } from "@mui/material"
 import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
@@ -17,41 +18,36 @@ import {
   IconButton,
   View,
 } from "native-base"
-import CheckIcon from "@mui/icons-material/Check"
 import CloseIcon from "@mui/icons-material/Close"
 import LottieLoader from "../../components/lotties/LottieLoader"
 import { get, post } from "../../../api/ws"
 import { useAuthUser } from "react-auth-kit"
+import ModalCotizaciones from "../../components/ModalCotizaciones"
+import { width } from "@mui/system"
 
 const Cotizaciones = () => {
-  useEffect(() => {
-    document.title = "Cotizaciones"
-    document
-      .querySelector('meta[name="description"]')
-      .setAttribute("content", "Gestion de cotizaciones")
-    getData()
-  }, [])
-  //data user
   const auth = useAuthUser()
-
-  //valida loader
   const [loader, setLoader] = useState(true)
-  //valida alerta de status
   const [showAlert, setShowAlert] = useState(false)
-  // text alert
   const [alertMessage, setAlertMessage] = useState([])
-  // color alert
   const [alertColor, setAlertColor] = useState("")
-  //modal
   const [modalVisible, setModalVisible] = useState(false)
-  //value status
   const [status, setStatus] = useState("")
-  //list status
   const [dataStatus, setDataStatus] = useState([])
-  //data contact en especifico
   const [dataContact, setDataContact] = useState([])
-  //data list cotizaciones
   const [data, setData] = useState([])
+
+  //PAGINATOR
+  const [page, setPage] = React.useState(0)
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage)
+  }
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value)
+    setPage(0)
+  }
+  //
 
   useEffect(() => {
     if (dataContact.length !== 0) {
@@ -59,7 +55,16 @@ const Cotizaciones = () => {
     }
   }, [dataContact])
 
+  useEffect(() => {
+    document.title = "Cotizaciones"
+    document
+      .querySelector('meta[name="description"]')
+      .setAttribute("content", "Gestion de cotizaciones")
+    getData()
+  }, [])
+
   const getData = async () => {
+    setLoader(true)
     const response = await get("cotizacion/listaCotizaciones")
     const getStatus = await get("cotizacion/status")
     setData(response)
@@ -68,29 +73,27 @@ const Cotizaciones = () => {
   }
 
   const updateStatus = async (idCotizacion) => {
-    const id = auth().id
     //preparando data para enviar por post
     const sendData = {}
     sendData["id"] = idCotizacion
     sendData["status_id"] = status
-    sendData["user_id"] = id
     //obteniendo respuesta y mostrar alerta con mensaje
     const response = await post(`cotizacion/setStatus`, sendData)
     setShowAlert(true)
     setAlertMessage(response)
-    response.estado ? setAlertColor("success") : setAlertColor("error")
-    //cerrar alert time
+    if (response.estado) {
+      getData()
+      setAlertColor("success")
+    } else {
+      setAlertColor("error")
+    }
     setTimeout(() => {
       setShowAlert(false)
-      getData()
     }, 2000)
   }
+
   const handleModal = (row) => {
-    if (row !== dataContact) {
-      setDataContact(row)
-    } else {
-      setModalVisible(true)
-    }
+    row !== dataContact ? setDataContact(row) : setModalVisible(true)
   }
 
   return (
@@ -101,7 +104,11 @@ const Cotizaciones = () => {
         <View>
           <TableContainer
             component={Paper}
-            style={{ margin: 16 }}
+            style={{
+              padding: 32,
+              margin: "auto",
+              width: "100%",
+            }}
           >
             {/* Alert status */}
             {showAlert && (
@@ -150,7 +157,12 @@ const Cotizaciones = () => {
               </Alert>
             )}
             <Table
-              sx={{ minWidth: 650 }}
+              sx={{
+                minWidth: 650,
+                backgroundColor: "#fff",
+                borderRadius: 2,
+                boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
+              }}
               aria-label="simple table"
             >
               <TableHead>
@@ -170,43 +182,51 @@ const Cotizaciones = () => {
               </TableHead>
               <TableBody>
                 {data ? (
-                  data.map((row, index) => (
-                    <TableRow
-                      key={row.id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell
-                        component="th"
-                        scope="row"
+                  data
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => (
+                      <TableRow
+                        key={row.id}
+                        sx={{
+                          "&:nth-of-type(odd)": {
+                            backgroundColor: "#f5f5f5",
+                          },
+                        }}
                       >
-                        {row.id}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="ghost"
-                          onPress={() => handleModal(row)}
+                        <TableCell
+                          component="th"
+                          scope="row"
                         >
-                          {row.user.name}
-                          {row.user.apellido}
-                        </Button>
-                      </TableCell>
-                      <TableCell align="center">
-                        {row.fecha_cotizacion}
-                      </TableCell>
-                      <TableCell align="center">{row.m2}</TableCell>
-                      <TableCell align="center">{row.recamaras}</TableCell>
-                      <TableCell align="center">{row.baños}</TableCell>
-                      <TableCell align="center">{row.cocheras}</TableCell>
-                      <TableCell align="center">${row.total}</TableCell>
-                      <TableCell align="center">{row.status.status}</TableCell>
-                      <TableCell align="center">
-                        {row.condicion.condicion}
-                      </TableCell>
-                      <TableCell align="center">
-                        {row.acabado.acabado}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                          {row.id}
+                        </TableCell>
+                        <TableCell align="center">
+                          <Button
+                            variant="link"
+                            onPress={() => handleModal(row)}
+                          >
+                            {row.user.name}
+                            {row.user.apellido}
+                          </Button>
+                        </TableCell>
+                        <TableCell align="center">
+                          {row.fecha_cotizacion}
+                        </TableCell>
+                        <TableCell align="center">{row.m2}</TableCell>
+                        <TableCell align="center">{row.recamaras}</TableCell>
+                        <TableCell align="center">{row.baños}</TableCell>
+                        <TableCell align="center">{row.cocheras}</TableCell>
+                        <TableCell align="center">${row.total}</TableCell>
+                        <TableCell align="center">
+                          {row.status.status}
+                        </TableCell>
+                        <TableCell align="center">
+                          {row.condicion.condicion}
+                        </TableCell>
+                        <TableCell align="center">
+                          {row.acabado.acabado}
+                        </TableCell>
+                      </TableRow>
+                    ))
                 ) : (
                   <TableRow>
                     <TableCell
@@ -219,77 +239,27 @@ const Cotizaciones = () => {
                 )}
               </TableBody>
             </Table>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={data.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </TableContainer>
         </View>
       )}
-      {/* Modal edit status */}
-      <Modal
-        isOpen={modalVisible}
-        onClose={setModalVisible}
-        size="xl"
-      >
-        <Modal.Content>
-          <Modal.CloseButton />
-          <Modal.Header>Datos de contacto</Modal.Header>
-          <Modal.Body>
-            <Text>
-              Nombre: {dataContact.user?.name}
-              {dataContact.user?.apellido}
-            </Text>
-            <Text>Email: {dataContact.user?.email}</Text>
-            <Text>Telefono: {dataContact.user?.telefono}</Text>
-            <Select
-              minWidth="40"
-              accessibilityLabel="Select status"
-              placeholder={dataContact.status?.status}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={(itemValue) => {
-                setStatus(itemValue)
-                console.log("value", itemValue)
-              }}
-              selectedValue={status}
-            >
-              {dataStatus.map((item, index) => (
-                <Select.Item
-                  key={index}
-                  label={item.status}
-                  value={item.id}
-                />
-              ))}
-              {/* <Select.Item label="Sin cita" value="1" />
-                <Select.Item label="Cita" value="2" />
-                <Select.Item label="Cotizado" value="3" />
-                <Select.Item label="Aprobado" value="4" />
-                <Select.Item label="Rechazado" value="5" /> */}
-            </Select>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="ghost"
-                colorScheme="blueGray"
-                onPress={() => {
-                  setModalVisible(false)
-                }}
-              >
-                Cerrar
-              </Button>
-              <Button
-                onPress={() => {
-                  updateStatus(dataContact.id)
-                  setModalVisible(false)
-                }}
-              >
-                Guardar
-              </Button>
-            </Button.Group>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
+      <ModalCotizaciones
+        dataContact={dataContact}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        dataStatus={dataStatus}
+        status={status}
+        setStatus={setStatus}
+        updateStatus={updateStatus}
+      />
     </>
   )
 }
