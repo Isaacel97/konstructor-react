@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import "bootstrap/dist/css/bootstrap.min.css"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { NativeBaseProvider } from "native-base"
@@ -55,6 +55,7 @@ function App() {
               path="/registro"
               element={<Register />}
             />
+
             <Route
               path="/admin"
               element={<MenuDrawer />}

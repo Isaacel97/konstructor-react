@@ -1,18 +1,44 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { NavLink } from "react-router-dom"
 import { Navbar, Nav, Container, Image } from "react-bootstrap"
 import "bootstrap/dist/css/bootstrap.min.css"
 import Logo from "../../assets/images/logos/Icono_Konstruktor.png"
-import { useAuthUser, useSignOut } from "react-auth-kit"
+import { useAuthUser, useSignOut, useAuthHeader } from "react-auth-kit"
 
 export const NavBar = () => {
   const [expanded, setExpanded] = useState(false)
+  const [admin, setAdmin] = useState(false)
   const handleNavCollapse = () => {
     setExpanded(!expanded)
   }
-
+  const authHeader = useAuthHeader()
   const auth = useAuthUser()
   const signOut = useSignOut()
+
+  useEffect(() => {
+    if (auth()) {
+      validateToken()
+    }
+  }, [])
+
+  const validateToken = async () => {
+    const token = authHeader().split(" ")[1]
+    if (token) {
+      console.log("realizando auth")
+      const res = await fetch("http://localhost:8000/api/user/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      const data = await res.json()
+      if (data.status === 401) signOut()
+
+      if (data.type === 1) setAdmin(true)
+    }
+  }
 
   return (
     <>
@@ -71,12 +97,15 @@ export const NavBar = () => {
               >
                 Contacto
               </Nav.Link>
-              <Nav.Link
-                as={NavLink}
-                to="/admin"
-              >
-                Admin
-              </Nav.Link>
+              {admin && (
+                <Nav.Link
+                  as={NavLink}
+                  to="/admin"
+                >
+                  {" "}
+                  Admin
+                </Nav.Link>
+              )}
               {auth() ? (
                 <Nav.Link
                   as={NavLink}
