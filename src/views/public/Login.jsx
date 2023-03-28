@@ -58,12 +58,15 @@ const Login = () => {
         setErrors({ email: data.message })
       }
       if (data.status === 200) {
+        console.log("usuario", data);
         signIn({
           token: data.token,
           expiresIn: 3600,
           tokenType: "Bearer",
-          authState: { email: email },
-          id: data.id,
+          authState: { 
+            email: email,
+            id: data.id,
+           },
         })
         navigate("/cotizador")
       }

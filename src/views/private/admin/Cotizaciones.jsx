@@ -11,7 +11,6 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import LottieLoader from '../../components/lotties/LottieLoader';
 import { get, post } from '../../../api/ws'
-import { useAuthUser } from "react-auth-kit"
 
 const Cotizaciones = () => {
   useEffect(() => {
@@ -19,8 +18,6 @@ const Cotizaciones = () => {
     document.querySelector('meta[name="description"]').setAttribute("content", "Gestion de cotizaciones");
     getData();
   }, []);
-  //data user
-  const auth = useAuthUser()
 
   //valida loader
   const [loader, setLoader] = useState(true);
@@ -56,12 +53,11 @@ const Cotizaciones = () => {
   }
 
   const updateStatus = async (idCotizacion) => {
-    const id = auth().id
     //preparando data para enviar por post
     const sendData = {};
     sendData['id'] = idCotizacion;
     sendData['status_id'] = status;
-    sendData['user_id'] = id;
+    //sendData['user_id'] = id;
     //obteniendo respuesta y mostrar alerta con mensaje
     const response = await post(`cotizacion/setStatus`, sendData);
     setShowAlert(true);

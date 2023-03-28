@@ -17,6 +17,7 @@ import { CategoryContainer } from "../components/CategoryContainer";
 import Slidecontact from "../../assets/images/slides/KONSTRUCTOR WEB_8.jpg";
 import {InputComp, CheckboxComp} from "../components/InputComp";
 import { get, post } from "../../api/ws";
+import { useAuthUser } from "react-auth-kit"
 
 //componente modal
 function MyVerticallyCenteredModal(props) {
@@ -46,11 +47,16 @@ function MyVerticallyCenteredModal(props) {
 }
 
 function Cotizador() {
+  //data user
+  const auth = useAuthUser()
   useEffect(() => {
     document.title = "Calcula online el presupuesto para construir 1 casa; incluye mano de obra, albañiles en Querétaro";
     document.querySelector('meta[name="description"]').setAttribute("content", "¿Deseas construir una casa, local comercial, residencia, casa pequeña en Querétaro? Obtén en línea un presupuesto con precios actuales del costo de materiales, albañiles, licencia de construccíón, plano arquitectónico y permisos en el estado de queretaro");
     getCondiciones();
   }, []);
+  //id user
+  const id = auth().id;
+  console.log('id storage', id);
   // metros cuadrados del terreno
   const [metros, setMetros] = useState('');
   // nombre de condicion
@@ -78,10 +84,9 @@ function Cotizador() {
   //tipos acabados
   const [acabados, setAcabados] = useState([]);
   const [acabado, setAcabado] = useState('');
-
   //datos de contacto
   const [nombre, setNombre] = useState('');
-  const [telefono, setTelefono] = useState('');
+  // const [telefono, setTelefono] = useState('');
 
   //costo total
   const [costo, setCosto] = useState('');
@@ -117,6 +122,8 @@ function Cotizador() {
 
   // valores selects recamaras, banos y chocheras
   const handleSelect = (setOption, event) => {
+    console.log(event.target.value);
+    console.log(event.target.name);
     setOption(event.target.value);
   };
 
@@ -149,27 +156,42 @@ function Cotizador() {
     const dataAcabados = await get('cotizacion/acabados/condicion/' + condicion_id);
     setAcabados(dataAcabados);
     setIsDisabled(true);
-    console.log('Acabados:', dataAcabados);
   }
 
-  const cotización = async (precioM2, areaConstruccion, recamaras, banos, cocheras, metros, COS, CUS, niveles, nombre, telefono, condicionId) => {
+  const cotización = async (precioM2, areaConstruccion, recamaras, banos, cocheras, metros, COS, CUS, niveles, condicionId) => {
     const precio = precioM2 * areaConstruccion;
+    console.log('Precio:', precio);
+    console.log('PrecioM2:', precioM2);
+    //useState para mostrar precio al cliente y dataCost para mandarlo a la base de datos
     setCosto(precio.toLocaleString("en"));
+    const dataCost = precio.toLocaleString("en");
     const data = {};
-    data['condicionId'] = condicionId;
-    data['costo'] = costo;
-    data['area'] = areaConstruccion;
+    //data set cotizacion
+    data['id_user'] = id;
+    data['metros'] = metros;
     data['recamaras'] = recamaras;
     data['banos'] = banos;
     data['cocheras'] = cocheras;
-    data['metros'] = metros;
+    data['condicionId'] = condicionId;
+    data['acabado'] = precioM2;
+    data['costo'] = dataCost;
+    //data envia email
+    data['area'] = areaConstruccion;
     data['COS'] = COS;
     data['CUS'] = CUS;
     data['niveles'] = niveles;
-    data['nombre'] = nombre;
-    data['telefono'] = telefono;
+    // data['nombre'] = nombre;
+    // data['telefono'] = telefono;
     console.log('Cotización:', data);
-    await post('cotizacion/enviaCotizacion', data);
+    const resInsert = await post('cotizacion/createCotizacion', data);
+    if (resInsert.estado) {
+      console.log('Cotización enviada, lo logramos!!!');
+      setNombre(resInsert.nombre);
+      await post('cotizacion/enviaCotizacion', data);
+    } else {
+      console.log('Error al enviar cotización');
+      console.log('algo hicimos mal #sadface2');
+    }
   }
 
   const contenido = 
@@ -330,7 +352,12 @@ function Cotizador() {
                             </Form.Select>
                           </Col>
                           <Col md={3} className="mb-2 mt-2">
-                            <Form.Select value={acabado} onChange={e => handleSelect(setAcabado, e)} arial-label="Recamaras">
+                            <Form.Select value={acabado.id} onChange={e =>
+                              {
+                                handleSelect(setAcabado, e)
+                              } 
+                              
+                              } arial-label="Acabados">
                               <option>Acabados</option>
                               {acabados.map(item => (
                                 <option key={item.id} value={item.precio}>{item.acabado}</option>
@@ -338,24 +365,24 @@ function Cotizador() {
                             </Form.Select>
                           </Col>
                         </Row>
-                        <Row>
+                        {/* <Row>
                           <InputComp onInputChange={e => handleSelect(setNombre, e)} col="4" controlId="Nombre" label="Nombre" type="text" placeholder="Nombre" min={2}/>
                           <InputComp onInputChange={e => handleSelect(setTelefono, e)} col="4" controlId="Telefono" label="Telefono" type="number" placeholder="Telefono" min={10} max={10}/>
                           {nombre === "" && telefono === "" && <p className="text-danger">Para obtener tu cotización llena los campos de contacto</p>}
-                        </Row>
+                        </Row> */}
                       </>}
                     </> 
                     }
                     <Row style={{justifyContent: "flex-end"}}>
                       <Col md={2} className="mt-2">
-                        {checkM2 && niveles !== "" && acabado !== "" && nombre !== "" && telefono.length === 10 &&
+                        {checkM2 && niveles !== "" && acabado !== "" &&
                         <Button
                           type="button"
                           id="calcular-m2"
                           size="lg"
                           variant="secondary"
                           onClick={() => {
-                            cotización(acabado, dataArea.areaConstruccion, recamaras, banos, cocheras, metros, dataArea.COS, dataArea.CUS, niveles, nombre, telefono, condicion_id)
+                            cotización(acabado, dataArea.areaConstruccion, recamaras, banos, cocheras, metros, dataArea.COS, dataArea.CUS, niveles, condicion_id)
                             setModalShow(true)
                             }}>
                           <FiSend />
