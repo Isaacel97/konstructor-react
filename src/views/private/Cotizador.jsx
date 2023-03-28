@@ -19,6 +19,8 @@ import { InputComp, CheckboxComp } from "../components/InputComp"
 import { get, post } from "../../api/ws"
 import { useAuthUser } from "react-auth-kit"
 
+import { Tooltip } from "native-base"
+import InfoIcon from "@mui/icons-material/Info"
 //componente modal
 function MyVerticallyCenteredModal(props) {
   return (
@@ -98,6 +100,14 @@ function Cotizador() {
 
   //costo total
   const [costo, setCosto] = useState("")
+  const [estudio, setEstudio] = useState(false)
+  const [cuartoLavado, setCuartoLavado] = useState(false)
+  const [cuartoServicio, setCuartoServicio] = useState(false)
+  const [salaTV, setSalaTV] = useState(false)
+  const [portico, setPortico] = useState(false)
+  const [vestidor, setVestidor] = useState(false)
+  const [otro, setOtro] = useState("")
+  const [condicionInfo, setCondicionInfo] = useState("AQUI ISA")
 
   // obtiene condiciones desde la base de datos
   const getCondiciones = async () => {
@@ -137,13 +147,20 @@ function Cotizador() {
 
   // asgina condicion segun area de terreno
   const catCondicion = (value) => {
+    //AQUI ISA
+
+    //DE LINEA
     if (value > condiciones[0].m2 && value < condiciones[1].m2) {
       setCondicion(condiciones[0].condicion)
       setCondicion_id(condiciones[0].id)
-    } else if (value >= condiciones[1].m2 && value < condiciones[2].m2) {
+    }
+    //RESIDENCIAL
+    else if (value >= condiciones[1].m2 && value < condiciones[2].m2) {
       setCondicion(condiciones[1].condicion)
       setCondicion_id(condiciones[1].id)
-    } else if (value >= condiciones[2].m2) {
+    }
+    //CAMPESTRE
+    else if (value >= condiciones[2].m2) {
       setCondicion(condiciones[2].condicion)
       setCondicion_id(condiciones[2].id)
     } else {
@@ -207,9 +224,17 @@ function Cotizador() {
     data["COS"] = COS
     data["CUS"] = CUS
     data["niveles"] = niveles
+    data["estudio"] = estudio
+    data["cuarto_lavado"] = cuartoLavado
+    data["cuarto_servicio"] = cuartoServicio
+    data["sala_tv"] = salaTV
+    data["portico"] = portico
+    data["vestidor"] = vestidor
+    data["otro"] = otro
     // data['nombre'] = nombre;
     // data['telefono'] = telefono;
     console.log("Cotización:", data)
+
     const resInsert = await post("cotizacion/createCotizacion", data)
     if (resInsert.estado) {
       console.log("Cotización enviada, lo logramos!!!")
@@ -236,6 +261,28 @@ function Cotizador() {
       </a>
     </>
   )
+  const handleChkbxEstudio = () => {
+    setEstudio((prev) => !prev)
+  }
+  const handleChkbxCuartoLavado = () => {
+    setCuartoLavado((prev) => !prev)
+  }
+  const handleChkbxCuartoServicio = () => {
+    setCuartoServicio((prev) => !prev)
+  }
+  const handleChkbxSalaTV = () => {
+    setSalaTV((prev) => !prev)
+  }
+  const handleChkbxVestidor = () => {
+    setVestidor((prev) => !prev)
+  }
+  const handleChkbxPortico = () => {
+    setPortico((prev) => !prev)
+  }
+  const handleOtro = (value) => {
+    setOtro(value)
+  }
+
   return (
     <div>
       <NavBar />
@@ -303,7 +350,22 @@ function Cotizador() {
                   </Row>
                   {/* check m2 */}
                   <h6 className="mt-4 text-center">
-                    <strong>Condición: {condicion}</strong>
+                    <strong>
+                      Condición: {condicion}{" "}
+                      {condicion && (
+                        <Tooltip
+                          label={condicionInfo}
+                          openDelay={500}
+                          placement="top"
+                          bg="indigo.500"
+                          _text={{
+                            color: "#fff",
+                          }}
+                        >
+                          <InfoIcon />
+                        </Tooltip>
+                      )}
+                    </strong>
                   </h6>
                   {metros > 60 && (
                     <>
@@ -414,53 +476,56 @@ function Cotizador() {
                         <>
                           <Row className="justify-content-md-center mt-3">
                             <CheckboxComp
-                              control="na"
+                              control="estudio"
                               col="auto"
                               text="Estudio"
+                              handleChange={handleChkbxEstudio}
                             />
                             <CheckboxComp
-                              control="na"
+                              control="cuarto_lavado"
                               col="auto"
                               text="Cuarto lavado"
+                              handleChange={handleChkbxCuartoLavado}
                             />
                             <CheckboxComp
-                              control="na"
+                              control="cuartos_servicio"
                               col="auto"
                               text="Cuarto de servicio"
+                              handleChange={handleChkbxCuartoServicio}
                             />
                             <CheckboxComp
-                              control="na"
+                              control="sala_tv"
                               col="auto"
                               text="Sala de TV"
+                              handleChange={handleChkbxSalaTV}
                             />
                           </Row>
                           <Row className="justify-content-md-center mt-1">
                             <CheckboxComp
-                              control="na"
+                              control="vestidor"
                               col="auto"
                               text="Vestidor"
+                              handleChange={handleChkbxVestidor}
                             />
                             {metros >= 350 && (
                               <>
                                 <CheckboxComp
-                                  control="na"
+                                  control="portico"
                                   col="auto"
                                   text="Portico"
-                                />
-                                <CheckboxComp
-                                  control="na"
-                                  col="auto"
-                                  text="Sala de juegos"
+                                  handleChange={handleChkbxPortico}
                                 />
                               </>
                             )}
                           </Row>
                           <Row className="justify-content-md-center">
                             <InputComp
+                              control="otro"
                               col="3"
                               controlId="otro"
                               type="text"
                               placeholder="Otro"
+                              handleChange={handleOtro}
                             />
                           </Row>
                         </>
@@ -564,7 +629,14 @@ function Cotizador() {
                               dataArea.COS,
                               dataArea.CUS,
                               niveles,
-                              condicion_id
+                              condicion_id,
+                              estudio,
+                              cuartoLavado,
+                              cuartoServicio,
+                              salaTV,
+                              vestidor,
+                              portico,
+                              otro
                             )
                             setModalShow(true)
                           }}
@@ -613,7 +685,7 @@ function Cotizador() {
         show={modalShow}
         onHide={() => {
           setModalShow(false)
-          window.location.reload()
+          // window.location.reload()
         }}
       />
     </div>
