@@ -89,7 +89,7 @@ const Cotizaciones = () => {
     }
     setTimeout(() => {
       setShowAlert(false)
-    }, 2000)
+    }, 3000)
   }
 
   const handleModal = (row) => {
