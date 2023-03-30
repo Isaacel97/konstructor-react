@@ -2,6 +2,7 @@ import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../assets/css/templatemo-plot-listing.css';
 import Carousel from 'react-bootstrap/Carousel';
+import { url } from '../../api/ws';
 
 export const Carrusel = (props) => {
     return (
@@ -32,7 +33,7 @@ export const ImagenesSlides = (props) => {
         <div className="col-lg-12 my-4">
             <div className="description">
                 <div className="row">
-                    <a href="contact.html">
+                    <a href={url + '/login'}>
                         <img src={props.img} alt={props.descripcion} className="img-fluid" />
                     </a>
                 </div>

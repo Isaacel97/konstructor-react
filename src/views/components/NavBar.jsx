@@ -25,7 +25,7 @@ export const NavBar = () => {
     const token = authHeader().split(" ")[1]
     if (token) {
       console.log("realizando auth")
-      const res = await fetch("http://localhost:8000/api/user/auth", {
+      const res = await fetch("https://icandelario-dev.com/back/public/api/user/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

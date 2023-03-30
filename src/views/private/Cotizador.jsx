@@ -18,7 +18,7 @@ import Slidecontact from "../../assets/images/slides/KONSTRUCTOR WEB_8.jpg"
 import { InputComp, CheckboxComp } from "../components/InputComp"
 import { get, post } from "../../api/ws"
 import { useAuthUser } from "react-auth-kit"
-
+import { url } from "../../api/ws"
 import { Tooltip } from "native-base"
 import InfoIcon from "@mui/icons-material/Info"
 //componente modal
@@ -107,7 +107,7 @@ function Cotizador() {
   const [portico, setPortico] = useState(false)
   const [vestidor, setVestidor] = useState(false)
   const [otro, setOtro] = useState("")
-  const [condicionInfo, setCondicionInfo] = useState("AQUI ISA")
+  const [condicionInfo, setCondicionInfo] = useState("Información")
 
   // obtiene condiciones desde la base de datos
   const getCondiciones = async () => {
@@ -153,16 +153,19 @@ function Cotizador() {
     if (value > condiciones[0].m2 && value < condiciones[1].m2) {
       setCondicion(condiciones[0].condicion)
       setCondicion_id(condiciones[0].id)
+      setCondicionInfo('Terreno de hasta 99m2, con maximo de 3 recamaras, 1.5 baños y 2 cocheras. Acabados de linea')
     }
     //RESIDENCIAL
     else if (value >= condiciones[1].m2 && value < condiciones[2].m2) {
       setCondicion(condiciones[1].condicion)
       setCondicion_id(condiciones[1].id)
+      setCondicionInfo('Terreno de 100m2 hasta 349m2, con maximo de 4 recamaras, 3 baños, 4 cocheras y otras opciones. Acabados residenciales o premium')
     }
     //CAMPESTRE
     else if (value >= condiciones[2].m2) {
       setCondicion(condiciones[2].condicion)
       setCondicion_id(condiciones[2].id)
+      setCondicionInfo('Terreno desde 350m2, con maximo de 6 recamaras, 6 baños, 4 cocheras y otras opciones. Acabados de campestre o premium')
     } else {
       setCondicion("")
     }
@@ -253,7 +256,7 @@ function Cotizador() {
         Querétaro
       </h2>
       <br />
-      <a href="contact.html">
+      <a href={url + '/login'}>
         <img
           src={Slidecontact}
           alt="Contactanos"

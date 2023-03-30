@@ -20,8 +20,8 @@ import {
   AiFillEyeInvisible,
   AiOutlineInfoCircle,
 } from "react-icons/ai"
-import { baseUrl } from "../../api/ws"
-import axios from "axios"
+import { post } from "../../api/ws"
+
 const Login = () => {
   useEffect(() => {
     document.title =
@@ -50,22 +50,21 @@ const Login = () => {
   const handleSubmit = async () => {
     try {
       console.log("nombre --->", name)
-      const { data } = await axios.post(baseUrl + "user/create/", {
+      const dataUser = {
         name: name,
         apellidos: lastName,
-        email,
-        password,
+        email: email,
+        password: password,
         role_id: 2,
-        telefono: phone,
-      })
-      if (data.status === 500) {
-        setErrors({ errorCreate: data.message })
+        telefono: phone
       }
-      if (data.status === 200) {
+      const res = await post("user/create", dataUser)
+      if (res.status === 500) {
+        setErrors({ errorCreate: res.message })
+      }  
+      if (res.status === 200) {
         navigate("/login")
       }
-
-      // console.log(data)
     } catch (error) {
       console.log(error)
     }

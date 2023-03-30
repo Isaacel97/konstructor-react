@@ -5,6 +5,7 @@ import BarChart from "../../components/BarChart.jsx"
 import { useEffect } from "react"
 import { statusInfo, totalCotizaciones } from "../../../api/chart.js"
 import Chart from "chart.js/auto"
+
 const Dashboard = () => {
   const [pieData, setpieData] = useState([])
   const [barData, setbarData] = useState([])

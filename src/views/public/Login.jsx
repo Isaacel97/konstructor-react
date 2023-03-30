@@ -46,7 +46,7 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const { data } = await axios.post(baseUrl + "user/login/", {
+      const { data } = await axios.post(baseUrl + "user/login", {
         email,
         password,
       })

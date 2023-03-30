@@ -9,12 +9,11 @@ import RecentActorsIcon from "@mui/icons-material/RecentActors"
 import HomeIcon from "@mui/icons-material/Home"
 import Dashboard from "../private/admin/Dashboard"
 import Cotizaciones from "../private/admin/Cotizaciones"
-import Inicio from "../public/Inicio"
 import { makeStyles } from "@mui/styles"
 import { Dimensions } from "react-native-web"
 import { Button, Container, Text, View } from "native-base"
 import estilos from "../../assets/js/styles/estilos"
-import { useAuthUser, useSignOut, useAuthHeader } from "react-auth-kit"
+import { useAuthUser, useAuthHeader } from "react-auth-kit"
 
 // medida del drawer
 const { width } = Dimensions.get("window")
@@ -57,7 +56,7 @@ const MenuDrawer = () => {
 
   const authHeader = useAuthHeader()
   const auth = useAuthUser()
-  const signOut = useSignOut()
+  //const signOut = useSignOut()
 
   useEffect(() => {
     if (auth()) {
@@ -70,7 +69,7 @@ const MenuDrawer = () => {
     console.log(token)
     if (token) {
       console.log("realizando auth")
-      const res = await fetch("http://localhost:8000/api/user/auth", {
+      const res = await fetch("https://icandelario-dev.com/back/public/api/user/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +81,7 @@ const MenuDrawer = () => {
       if (data.type === 2) {
         navigate("/", { replace: true })
       }
-
+      console.log(data);
       if (data.type === 1) setAdmin(true)
     }
   }
