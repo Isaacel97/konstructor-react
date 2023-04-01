@@ -4,6 +4,7 @@ import { Navbar, Nav, Container, Image } from "react-bootstrap"
 import "bootstrap/dist/css/bootstrap.min.css"
 import Logo from "../../assets/images/logos/Icono_Konstruktor.png"
 import { useAuthUser, useSignOut, useAuthHeader } from "react-auth-kit"
+import { baseUrl } from "../../api/ws";
 
 export const NavBar = () => {
   const [expanded, setExpanded] = useState(false)
@@ -25,7 +26,7 @@ export const NavBar = () => {
     const token = authHeader().split(" ")[1]
     if (token) {
       console.log("realizando auth")
-      const res = await fetch("https://icandelario-dev.com/back/public/api/user/auth", {
+      const res = await fetch(baseUrl + "user/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,6 +35,7 @@ export const NavBar = () => {
       })
 
       const data = await res.json()
+      console.log(data);
       if (data.status === 401) signOut()
 
       if (data.type === 1) setAdmin(true)

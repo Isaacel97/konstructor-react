@@ -9,12 +9,14 @@ export const InputComp = (props) => {
   const [valor, setValor] = useState("")
 
   const handleChange = (event) => {
-    console.log("cuando...")
+    console.log("cuando...", event)
     setValor(event.target.value)
     // props.onInputChange(event)
 
     if (props.control === "otro") {
       props.handleChange(event.target.value)
+    } else {
+      props.onInputChange(event)
     }
   }
 
@@ -41,34 +43,23 @@ export const CheckboxComp = (props) => {
   const [ancho, setAncho] = useState("")
 
   const handleChange = (event) => {
-    console.log("hjanlde change")
-    console.log(checked)
+    console.log("handle change")
+    console.log("handleChage", checked)
 
     setChecked(event.target.checked)
-    console.log(checked)
-    if (props.control === "estudio") {
+    // validamos el tipo de checkbox
+    if (
+      props.control === "estudio" ||
+      props.control === "cuarto_lavado" ||
+      props.control === "cuartos_servicio" ||
+      props.control === "sala_tv" ||
+      props.control === "vestidor" ||
+      props.control === "portico" ||
+      props.control === "otro") {
       props.handleChange()
+    } else {
+      props.onCheckboxChange(event.target.checked);
     }
-    if (props.control === "cuarto_lavado") {
-      props.handleChange()
-    }
-    if (props.control === "cuartos_servicio") {
-      props.handleChange()
-    }
-    if (props.control === "sala_tv") {
-      props.handleChange()
-    }
-    if (props.control === "vestidor") {
-      props.handleChange()
-    }
-    if (props.control === "portico") {
-      props.handleChange()
-    }
-    if (props.control === "otro") {
-      props.handleChange()
-    }
-
-    // props.onCheckboxChange(event.target.checked)
   }
 
   const handleInput = (setOption, event) => {
@@ -77,6 +68,7 @@ export const CheckboxComp = (props) => {
   }
 
   const calcularArea = () => {
+    console.log("calcular area" + largo + " " + ancho)
     let area = largo * ancho
     props.onAreaChange(area)
   }

@@ -1,7 +1,7 @@
-export const baseUrl = 'https://icandelario-dev.com/back/public/api/';
-//export const baseUrl = "http://localhost:8000/api/"
-//export const url = "http://localhost:3000"
-export const url = "https://icandelario-dev.com"
+//export const baseUrl = 'https://icandelario-dev.com/back/public/api/';
+export const baseUrl = "http://localhost:8000/api/"
+export const url = "http://localhost:3000"
+//export const url = "https://icandelario-dev.com"
 
 export const get = async (path) => {
   return fetch(baseUrl + path)

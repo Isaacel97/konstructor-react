@@ -14,6 +14,7 @@ import { Dimensions } from "react-native-web"
 import { Button, Container, Text, View } from "native-base"
 import estilos from "../../assets/js/styles/estilos"
 import { useAuthUser, useAuthHeader } from "react-auth-kit"
+import { baseUrl } from "../../api/ws"
 
 // medida del drawer
 const { width } = Dimensions.get("window")
@@ -56,7 +57,6 @@ const MenuDrawer = () => {
 
   const authHeader = useAuthHeader()
   const auth = useAuthUser()
-  //const signOut = useSignOut()
 
   useEffect(() => {
     if (auth()) {
@@ -69,7 +69,7 @@ const MenuDrawer = () => {
     console.log(token)
     if (token) {
       console.log("realizando auth")
-      const res = await fetch("https://icandelario-dev.com/back/public/api/user/auth", {
+      const res = await fetch(baseUrl + "user/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
